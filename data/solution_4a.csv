@@ -1,0 +1,14 @@
+Assuming not outliers are present, I will start with the following
+MinMax linear transformation equation to get the score to scale of [-10,10]
+
+(b-a)[(x-min_x)/(max_x -min_x)]+a 
+where a= -10 and b= 10
+
+However, depending on the skewness of the data, or present of any outliers,
+we can also do additional non-linear transformation prior to the above scaling. 
+For example, by applying transformation such as Log, square root, or Box-Cox (with
+carefully chosen lambda) we can bring the data to more normal like form, as well
+bring the outliers back closer to the majority of the data. Additional testing
+will be needed for each individual set of scores/unique set of POI to reach the 
+desirable visualization need.
+

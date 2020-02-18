@@ -67,36 +67,6 @@ poiDetails = (poiDetails
        .withColumnRenamed("max(Distance_km)", "radius"))   #clean up
 	   
 
-#4
-
-# Without knowing the  distribution of the data, I propose the following
-# equation for the transformation of data to scale of [-10,10]
-#
-# (b-a)[(x-min_x)/(max_x -min_x)]+a 
-#  where a= -10 and b= 10
-#
-# however, depending on the data, we can also do additional transformation
-# prior to the above scaling. Log and square root transformation might make
-# a better story out of the visualiztion.
-#
-# for example, if the density of all POI are in range (0,1), doing a square
-# root transformation can split the average at the 0 line, with above average
-# POI be on the position scale while below average POI on the negative side
-
-# an sample implementation of the scaling above if first using a Log transform
-# given when using output generated from Q3
-def scaleScoreLog(df):
-	a = -10.0 #lower bound
-	b = 10.0 #upper bound
-	df = df.withColumn('log',  log(df['density']))  #get log of density
-	meanX = df.groupBy().avg('log').take(1)[0][0]  #mean of log(density)
-	stddevX = df.groupBy().agg(stddev_pop('log')).take(1)[0][0]  #stddev of ln(density)
-	minX = df.groupBy().min('log').take(1)[0][0]
-	maxX = df.groupBy().max('log').take(1)[0][0]
-	df = df.withColumn('scaledScore', (b-a)*(df['log']-minX)/(maxX-minX)+a ) #transform to scale [-10,10]
-	return df['POI', 'scaledScore']
-
-	
 	
 	
 	
@@ -113,11 +83,6 @@ requestToClosestPoi.show(5)
 poiDetails.show()  #note POI1 = POI2, therefore POI2 is not included here
 	
 
-#Q4
-# example, if using output from Q3
-# scaleScoreLog(poiDetails).show()
-	
-	
 	
 	
 	
