@@ -2,6 +2,10 @@
 # EQ Works sample
 # Feb 2020
 
+from pyspark.context import SparkContext
+from pyspark.sql.session import SparkSession
+sc = SparkContext('local')
+spark = SparkSession(sc)
 from math import sin, cos, sqrt, atan2, radians, pi
 from pyspark.sql.functions import log
 from pyspark.sql.functions import stddev_pop
@@ -9,11 +13,11 @@ from pyspark.sql.types import StructType, StructField, StringType, FloatType
 import pyspark.sql.functions as func
 
 
-dataSample = sqlContext.read.csv("/tmp/data/DataSample.csv", header=True) #read in data sample
+dataSample = spark.read.csv("/tmp/data/DataSample.csv", header=True) #read in data sample
 dataSample = dataSample.withColumnRenamed(" TimeSt", "TimeSt") #clean up column name
 dataSampleNoDupe = dataSample.dropDuplicates(['TimeSt', 'Country', 'Province', 'City', 'Latitude', 'Longitude'])  #solution 1, remove dups based on time and location
 
-poi = sqlContext.read.csv("/tmp/data/POIList.csv", header=True) #read in POI list
+poi = spark.read.csv("/tmp/data/POIList.csv", header=True) #read in POI list
 poi = poi.withColumnRenamed(" Latitude", "Latitude") #clean up column name
 poiDict = poi.rdd.map(lambda row: row.asDict()).collect() #convert POI list to a dictionary
 
